@@ -1,0 +1,23 @@
+[project]
+name = "mqh"
+version = "0.1.0"
+description = "Marff's Quant House - ML-driven quantitative trading research"
+authors = [
+    {name = "Marff16"}
+]
+readme = "README.md"
+requires-python = "^3.13"
+dependencies = [
+    "pandas (>=3.0.5,<4.0.0)",
+    "numpy (>=2.5.2,<3.0.0)",
+    "yfinance (>=1.6.0,<2.0.0)"
+]
+
+[tool.poetry]
+packages = [
+    { include = "mqh", from = "src" }
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
