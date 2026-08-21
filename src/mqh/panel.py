@@ -5,12 +5,11 @@ import pandas as pd
 
 def convert_csv_to_dataframe(csv_files: List[Path]) -> pd.DataFrame:
     dataframes = [pd.read_csv(file, skiprows=[1,2]) for file in csv_files]
-    dataframes = [df.rename(columns={"Price":"Date"}) for df in dataframes]  
+    dataframes = [df.rename(columns={"Price": "Date"}).set_index('Date') for df in dataframes]
 
     same_len = all(len(df) == len(dataframes[0]) for df in dataframes)
     merged_df = pd.DataFrame()
     if same_len:
-        merged_df.set_index('Date', inplace=True)
         merged_df = pd.concat(dataframes, axis=1)
         print(f"-> Merged DataFrame shape: {merged_df.shape}")
     else:
