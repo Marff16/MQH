@@ -2,22 +2,25 @@ from pathlib import Path
 from typing import List
 from mqh.fetch import fetch_data
 from mqh.parse import parse_tickers
+from mqh.panel import read_all_price_data, read_selected_price_data
 import argparse 
+import pandas as pd
 
-def download_data(ticker_file: Path, start_date: str, end_date: str, output_dir: Path) -> None:
+def download_data(ticker_file: Path, start_date: str, end_date: str, output_dir: Path, overwrite: bool = False) -> pd.DataFrame:
     """
     Method to download data for tickers specified in a text file and save it to CSV files
     """
     tickers = parse_tickers(ticker_file)
-    fetch_data(tickers, start_date, end_date, output_dir)
+    fetch_data(tickers, start_date, end_date, output_dir, overwrite)
+    df = read_all_price_data(output_dir)
 
-    return None
+    return df
 
 def main():
     """
     Run this script:
-    poetry run python scripts/download_data.py <ticker_file> <start_date> <end_date> [--output_dir <output_dir>]
-    
+    poetry run python scripts/download_data.py <ticker_file> <start_date> <end_date> [--output_dir <output_dir>] [--overwrite <overwrite>]
+
     Example:
     poetry run python scripts/download_data.py data/tickers.txt 2021-01-01 2026-01-01
     """
@@ -26,10 +29,11 @@ def main():
     parser.add_argument("--start_date", type=str, default="2021-01-01", help="Start date for fetching data (YYYY-MM-DD).")
     parser.add_argument("--end_date", type=str, default="2026-01-01", help="End date for fetching data (YYYY-MM-DD).")
     parser.add_argument("--output_dir", type=Path, default=Path("data"), help="Directory to save the CSV files. Default is 'data'.")
+    parser.add_argument("--overwrite", type=bool, default=False, help="Overwrite existing CSV files if they already exist.")
 
     args = parser.parse_args()
 
-    download_data(args.ticker_file, args.start_date, args.end_date, args.output_dir)
-
+    df = download_data(args.ticker_file, args.start_date, args.end_date, args.output_dir, args.overwrite)
+    print(df.head(50))
 if __name__ == "__main__":
     main()
