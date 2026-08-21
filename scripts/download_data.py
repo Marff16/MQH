@@ -35,5 +35,6 @@ def main():
 
     df = download_data(args.ticker_file, args.start_date, args.end_date, args.output_dir, args.overwrite)
     print(df.head(50))
+    print(df.tail(50))
 if __name__ == "__main__":
     main()

@@ -7,10 +7,15 @@ def convert_csv_to_dataframe(csv_files: List[Path]) -> pd.DataFrame:
     dataframes = [pd.read_csv(file, skiprows=[1,2]) for file in csv_files]
     dataframes = [df.rename(columns={"Price": "Date"}).set_index('Date') for df in dataframes]
 
+    # Insert a new column "Ticker" in each DataFrame with the corresponding ticker name
+    ticker_names = [file.stem for file in csv_files]
+    for idx, df in enumerate(dataframes):
+        df.insert(0, "Ticker", ticker_names[idx])
+
     same_len = all(len(df) == len(dataframes[0]) for df in dataframes)
     merged_df = pd.DataFrame()
     if same_len:
-        merged_df = pd.concat(dataframes, axis=1)
+        merged_df = pd.concat(dataframes, axis=0)
         print(f"-> Merged DataFrame shape: {merged_df.shape}")
     else:
         print(f"-> DataFrames have different lengths. Cannot merge.")
